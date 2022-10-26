@@ -37,8 +37,7 @@ export default function HomeScreen(props: any) {
           name="Home"
           children={() => (
             <TargetListScreen
-              accessToken={props.route.params.accessToken}
-              refreshToken={props.route.params.refreshToken}
+              apiKey={props.route.params.apiKey}
               hostAddress={props.route.params.hostAddress}
               navigation={props.navigation}
             />

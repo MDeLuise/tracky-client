@@ -44,7 +44,7 @@ export default function TargetScreen(props: Object) {
           case 1:
             doDelete(
               props.route.params.hostAddress + "/value/" + valueId,
-              props.route.params.accessToken
+              props.route.params.apiKey
             )
               .then((res) => {
                 //dispatchEvent(new Event("focus"));
@@ -66,7 +66,7 @@ export default function TargetScreen(props: Object) {
   const fetchTarget: Function = () => {
     doGet(
       props.route.params.hostAddress + "/target/" + props.route.params.targetId,
-      props.route.params.accessToken
+      props.route.params.apiKey
     )
       .then((resp) => {
         if (resp.status === 200) {
@@ -138,8 +138,7 @@ export default function TargetScreen(props: Object) {
             style={styles.addBtn}
             onPress={() =>
               props.navigation.navigate("AddValueScreen", {
-                accessToken: props.route.params.accessToken,
-                refreshToken: props.route.params.refreshToken,
+                apiKey: props.route.params.apiKey,
                 hostAddress: props.route.params.hostAddress,
                 targetId: props.route.params.targetId,
               })

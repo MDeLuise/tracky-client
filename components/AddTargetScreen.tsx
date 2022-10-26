@@ -15,7 +15,7 @@ export default function AddTargetScreen(props: any) {
     doPost(
       props.route.params.hostAddress + "/target",
       dataToSend,
-      props.route.params.accessToken
+      props.route.params.apiKey
     )
       .then((resp) => {
         if (resp.status === 200) {

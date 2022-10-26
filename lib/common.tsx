@@ -1,33 +1,26 @@
 export const doPost = (
   url: string,
   body: string,
-  token?: string
+  apiKey?: string
 ): Promise<Response> => {
-  return doFetch(url, "post", body, token);
+  return doFetch(url, "post", body, apiKey);
 };
 
-export const doGet = (url: string, token: string): Promise<Response> => {
-  return doFetch(url, "get", undefined, token);
+export const doGet = (url: string, apiKey: string): Promise<Response> => {
+  return doFetch(url, "get", undefined, apiKey);
 };
 
-export const doDelete = (url: string, token: string): Promise<Response> => {
-  return doFetch(url, "delete", undefined, token);
+export const doDelete = (url: string, apiKey: string): Promise<Response> => {
+  return doFetch(url, "delete", undefined, apiKey);
 };
-
-export const refreshToken = (refreshToken: string): Promise<Response> => {
-  return doFetch("/refresh", "post", `{refresh_token: ${refreshToken}}`, undefined)
-}
 
 const doFetch = (
   url: string,
   method: string,
   body?: string,
-  token?: string
+  apiKey?: string
 ): Promise<Response> => {
   let headers = { "Content-Type": "application/json" };
-  if (token != undefined) {
-    headers["Authorization"] = "Bearer " + token;
-  }
   let options = {
     method: method,
     headers: headers,
@@ -35,5 +28,12 @@ const doFetch = (
   if (body != undefined) {
     options["body"] = body;
   }
-  return fetch(url, options);
+
+  if (url.includes('?')) {
+    url += "&key=" + apiKey;
+  } else {
+    url += "?key=" + apiKey;
+  }
+
+  return fetch(url , options);
 };

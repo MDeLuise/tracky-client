@@ -15,7 +15,7 @@ export default function AddValueScreen(props: any) {
     doPost(
       props.route.params.hostAddress + "/value",
       dataToSend,
-      props.route.params.accessToken
+      props.route.params.apiKey
     )
       .then((resp) => {
         if (resp.status === 200) {
@@ -27,8 +27,7 @@ export default function AddValueScreen(props: any) {
       })
       .then((_dataJson) => {
         props.navigation.navigate("TargetScreen", {
-          accessToken: props.route.params.accessToken,
-          refreshToken: props.route.params.refreshToken,
+          apiKey: props.route.params.apiKey,
           hostAddress: props.route.params.hostAddress,
           targetId: props.route.params.targetId,
         });

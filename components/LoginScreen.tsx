@@ -9,51 +9,34 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from "react-native";
-import { doPost } from "../lib/common";
+import { doGet } from "../lib/common";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LoginScreen({ navigation }: any) {
   const [hostAddress, setHostAddress] = useState("http://localhost:3000");
-  const [username, setUsername] = useState("admin");
-  const [password, setPassword] = useState("admin");
+  const [apiKey, setApiKey] = useState('');
 
-  const login = (host: string, username: string, password: string) => {
-    const dataToSend: string = JSON.stringify({
-      username: username,
-      password: password,
-    });
-    let accessToken: string = "";
-    let refreshToken: string = "";
-    doPost(host + "/auth/login", dataToSend)
+  const login = (host: string, key: string) => {
+    doGet(`${host}/target`, key)
       .then((resp) => {
         if (resp.status === 200) {
           return resp.json();
         } else if (resp.status == 401) {
-          alert("wrong username or password");
+          alert("wrong credentials");
           return Promise.reject("server");
         } else {
           alert("cannot connect to the server");
           return Promise.reject("server");
         }
       })
-      .then((dataJson) => {
-        refreshToken = dataJson["Data"]["refresh_token"];
-        accessToken = dataJson["Data"]["token"];
+      .then((_dataJson) => {
+        console.log("ok")
         try {
-          AsyncStorage.multiSet(
-            [
-              ["accessToken", accessToken],
-              ["refreshToken", refreshToken],
-              ["hostAddress", hostAddress],
-            ],
-            () =>
-              navigation.navigate("HomeScreen", {
-                accessToken: accessToken,
-                refreshToken: refreshToken,
-                hostAddress: hostAddress,
-                navigation: navigation,
-              })
-          );
+          AsyncStorage.setItem("key", apiKey, () => navigation.navigate("HomeScreen", {
+              hostAddress: hostAddress,
+              apiKey: apiKey,
+              navigation: navigation,
+          }));
         } catch (e) {
           console.error("error persisting data", e);
         }
@@ -84,20 +67,14 @@ export default function LoginScreen({ navigation }: any) {
           />
           <TextInput
             style={styles.input}
-            placeholder="Username"
-            placeholderTextColor={"grey"}
-            onChangeText={(newUsername) => setUsername(newUsername)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
+            placeholder="Api Key"
             placeholderTextColor={"grey"}
             secureTextEntry={true}
-            onChangeText={(newPassword) => setPassword(newPassword)}
+            onChangeText={(newKey) => setApiKey(newKey)}
           />
           <TouchableOpacity
             style={styles.btn}
-            onPress={() => login(hostAddress, username, password)}
+            onPress={() => login(hostAddress, apiKey)}
             >
             <Text style={styles.btnText}>Login</Text>
           </TouchableOpacity>

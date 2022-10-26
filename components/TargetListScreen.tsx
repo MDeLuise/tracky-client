@@ -37,7 +37,7 @@ export default function TargetListScreen(props: Object) {
           case 1:
             doDelete(
               props.hostAddress + "/target/" + targetId,
-              props.accessToken
+              props.apiKey
             ).catch((err) => {
               if (err === "server") return;
               console.error(err);
@@ -53,7 +53,7 @@ export default function TargetListScreen(props: Object) {
   };
 
   const fetchTargets: Function = () => {
-    doGet(props.hostAddress + "/target", props.accessToken)
+    doGet(props.hostAddress + "/target", props.apiKey)
       .then((resp) => {
         if (resp.status === 200) {
           return resp.json();
@@ -79,7 +79,7 @@ export default function TargetListScreen(props: Object) {
   };
 
   const fetchLastValueOfTarget: Function = (targetId: string) => {
-    doGet(props.hostAddress + "/target/" + targetId, props.accessToken)
+    doGet(props.hostAddress + "/target/" + targetId, props.apiKey)
       .then((resp) => {
         if (resp.status === 200) {
           return resp.json();
@@ -112,8 +112,7 @@ export default function TargetListScreen(props: Object) {
     <TouchableOpacity
       onPress={() =>
         props.navigation.navigate("TargetScreen", {
-          accessToken: props.accessToken,
-          refreshToken: props.refreshToken,
+          apiKey: props.apiKey,
           hostAddress: props.hostAddress,
           targetId: item.id,
           targetName: item.name,
@@ -141,8 +140,7 @@ export default function TargetListScreen(props: Object) {
             style={styles.addTarget}
             onPress={() =>
               props.navigation.navigate("AddTargetScreen", {
-                accessToken: props.accessToken,
-                refreshToken: props.refreshToken,
+                apiKey: props.apiKey,
                 hostAddress: props.hostAddress,
                 //navigation: props.navigation
               })
