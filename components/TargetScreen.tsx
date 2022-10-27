@@ -8,7 +8,7 @@ import {
   Pressable,
   TouchableOpacity,
 } from "react-native";
-import { doDelete, doGet } from "../lib/common";
+import { doDelete, doGet } from "../common/ServerRequests";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import ChartComponent from "./ChartComponent";
 import { useActionSheet } from "@expo/react-native-action-sheet";

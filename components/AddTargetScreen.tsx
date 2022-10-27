@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { StyleSheet, Button, SafeAreaView, TextInput } from "react-native";
-import { doPost } from "../lib/common";
+import { StyleSheet, Text, SafeAreaView, TextInput, TouchableOpacity } from "react-native";
+import { GlobalStyles } from "../common/GlobalStyles";
+import { doPost } from "../common/ServerRequests";
 
 export default function AddTargetScreen(props: any) {
   const [name, setName] = useState();
@@ -50,12 +51,16 @@ export default function AddTargetScreen(props: any) {
       <TextInput
         style={styles.input}
         onChangeText={(val) => setDescription(val)}
-        placeholder="Description"/>
+        placeholder="Description" />
       <TextInput
         style={styles.input}
         onChangeText={(val) => setUnit(val)}
         placeholder="Unit" />
-      <Button title="add" onPress={() => addTarget()} />
+      <TouchableOpacity
+        style={{...GlobalStyles.btn, width: "80%" }}
+        onPress={() => addTarget()}>
+        <Text style={GlobalStyles.btnText}>Create</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }

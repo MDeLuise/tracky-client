@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { StyleSheet, Button, SafeAreaView } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-import { doPost } from "../lib/common";
+import { StyleSheet, Text, SafeAreaView, TextInput, TouchableOpacity } from "react-native";
+import { GlobalStyles } from "../common/GlobalStyles";
+import { doPost } from "../common/ServerRequests";
 
 export default function AddValueScreen(props: any) {
   const [value, setValue] = useState();
@@ -47,7 +47,11 @@ export default function AddValueScreen(props: any) {
         onChangeText={(val) => setValue(val)}
         placeholder="value"
       />
-      <Button title="add" onPress={() => addValue()} />
+      <TouchableOpacity
+        style={{...GlobalStyles.btn, width: "80%" }}
+        onPress={() => addValue()}>
+        <Text style={GlobalStyles.btnText}>Add</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }

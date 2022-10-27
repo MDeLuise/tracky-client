@@ -31,27 +31,22 @@ export default function HomeScreen(props: any) {
             },
             null,
           ],
-        })}
-      >
+        })}>
         <sampleTabNavigation.Screen
           name="Home"
           children={() => (
             <TargetListScreen
               apiKey={props.route.params.apiKey}
               hostAddress={props.route.params.hostAddress}
-              navigation={props.navigation}
-            />
-          )}
-        />
+              navigation={props.navigation} />
+          )} />
 
         <sampleTabNavigation.Screen
           name="Settings"
           children={() => (
             <SettingsScreen
-              navigation={props.navigation}
-            />
-          )}
-        />
+              navigation={props.navigation} />
+          )} />
       </sampleTabNavigation.Navigator>
     </NavigationContainer>
   );

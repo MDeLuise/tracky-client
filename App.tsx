@@ -16,16 +16,13 @@ export default function App() {
   //AsyncStorage.clear()
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [accessToken, setAccessToken] = useState("");
-  const [refreshToken, setRefreshToken] = useState("");
+  const [apiKey, setApiKey] = useState("");
   const [hostAddress, setHostAddress] = useState("");
   const getData = async () => {
     try {
-      const storedAccessToken = await AsyncStorage.getItem("accessToken");
-      setAccessToken(storedAccessToken);
-      setLoggedIn(storedAccessToken !== null);
-      const storedRefreshToken = await AsyncStorage.getItem("refreshToken");
-      setRefreshToken(storedRefreshToken);
+      const storedApiKey = await AsyncStorage.getItem("apiKey");
+      setApiKey(storedApiKey);
+      setLoggedIn(storedApiKey !== null);
       const storedHostAddress = await AsyncStorage.getItem("hostAddress");
       setHostAddress(storedHostAddress);
       setLoading(false);
@@ -54,8 +51,7 @@ export default function App() {
                 name="HomeScreen"
                 component={HomeScreen}
                 initialParams={{
-                  accessToken: accessToken,
-                  refreshToken: refreshToken,
+                  apiKey: apiKey,
                   hostAddress: hostAddress,
                 }}
                 options={{ title: "Tracky" }}

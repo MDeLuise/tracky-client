@@ -7,9 +7,10 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
-import { doDelete, doGet } from "../lib/common";
+import { doDelete, doGet } from "../common/ServerRequests";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useActionSheet } from "@expo/react-native-action-sheet";
+import { GlobalStyles } from "../common/GlobalStyles";
 
 export default function TargetListScreen(props: Object) {
   const [targets, setTargets]: [Array<string>, Function] = useState([]);
@@ -119,9 +120,8 @@ export default function TargetListScreen(props: Object) {
         })
       }
       style={{ width: "100%" }}
-      onLongPress={() => contextMenu(item.id)}
-    >
-      <View style={styles.item}>
+      onLongPress={() => contextMenu(item.id)}>
+      <View style={GlobalStyles.item}>
         <View>
           <Text style={styles.title}>{item.name}</Text>
           <Text style={styles.description}>{item.description}</Text>
@@ -146,14 +146,13 @@ export default function TargetListScreen(props: Object) {
               })
             }>
             <Ionicons name="add" size={20} color={"white"} />
-            <Text style={styles.btnText}>Create New</Text>
+            <Text style={GlobalStyles.btnText}>Create New</Text>
           </TouchableOpacity>
           <FlatList
             data={targets}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
-            style={styles.list}
-          />
+            style={styles.list} />
         </>
       )}
     </SafeAreaView>
@@ -162,11 +161,7 @@ export default function TargetListScreen(props: Object) {
 
 const styles = StyleSheet.create({
   addTarget: {
-    backgroundColor: "rgb(18, 58, 221)",
-    borderRadius: 10,
-    //borderWidth: 1,
-    //borderColor: '#fff',
-    height: 50,
+    ...GlobalStyles.btn,
     width: "80%",
     justifyContent: "center",
     alignItems: "center",
@@ -174,31 +169,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontWeight: "bold",
   },
-  btnText: {
-    color: "white",
-    textAlign:'center',
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#f2f2f2",
-  },
-  item: {
-    backgroundColor: "white",
-    padding: 20,
-    marginVertical: 8,
-    borderRadius: 10,
-    width: "80%",
-    alignSelf: "center",
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    borderColor: "#ececec",
   },
   title: {
     color: "#151515",

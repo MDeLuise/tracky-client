@@ -8,9 +8,12 @@ import {
   TextInput,
   ImageBackground,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
-import { doGet } from "../lib/common";
+import { doGet } from "../common/ServerRequests";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { GlobalStyles } from "../common/GlobalStyles";
 
 export default function LoginScreen({ navigation }: any) {
   const [hostAddress, setHostAddress] = useState("http://localhost:3000");
@@ -30,9 +33,10 @@ export default function LoginScreen({ navigation }: any) {
         }
       })
       .then((_dataJson) => {
-        console.log("ok")
         try {
-          AsyncStorage.setItem("key", apiKey, () => navigation.navigate("HomeScreen", {
+          AsyncStorage.multiSet(
+            [["apiKey", apiKey], ["hostAddress", hostAddress]],
+            () => navigation.navigate("HomeScreen", {
               hostAddress: hostAddress,
               apiKey: apiKey,
               navigation: navigation,
@@ -49,61 +53,43 @@ export default function LoginScreen({ navigation }: any) {
   };
 
   return (
-    //<KeyboardAvoidingView>
-    <ImageBackground
-      style={styles.backgroundImg}
-      resizeMode="repeat"
-      source={require("../assets/dots.png")}
-    >
-      <SafeAreaView style={styles.container}>
-        <Image style={styles.img} source={require("../assets/logo.png")} />
-        <View style={styles.view}>
-          <Text style={styles.text}>Login to your Account</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Host address"
-            placeholderTextColor={"grey"}
-            onChangeText={(newAddress) => setHostAddress(newAddress)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Api Key"
-            placeholderTextColor={"grey"}
-            secureTextEntry={true}
-            onChangeText={(newKey) => setApiKey(newKey)}
-          />
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() => login(hostAddress, apiKey)}
-            >
-            <Text style={styles.btnText}>Login</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </ImageBackground>
-    //</KeyboardAvoidingView>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}>
+      <ImageBackground
+        style={styles.backgroundImg}
+        resizeMode="repeat"
+        source={require("../assets/dots.png")}>
+        <SafeAreaView style={styles.container}>
+          <Image style={styles.img} source={require("../assets/logo.png")} />
+          <View style={styles.view}>
+            <Text style={styles.text}>Login to your Account</Text>
+            <TextInput
+              style={{ ...GlobalStyles.input, width: "100%", marginVertical: 0 }}
+              placeholder="Host Address"
+              placeholderTextColor={"grey"}
+              onChangeText={(newAddress) => setHostAddress(newAddress)} />
+            <TextInput
+              style={{ ...GlobalStyles.input, width: "100%", marginVertical: 0 }}
+              placeholder="Api Key"
+              placeholderTextColor={"grey"}
+              secureTextEntry={true}
+              onChangeText={(newKey) => setApiKey(newKey)} />
+            <TouchableOpacity
+              style={GlobalStyles.btn}
+              onPress={() => login(hostAddress, apiKey)}>
+              <Text style={GlobalStyles.btnText}>Login</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </ImageBackground>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   backgroundImg: {
     flex: 1,
-  },
-  btn: {
-    backgroundColor: "rgb(18, 58, 221)",
-    borderRadius:10,
-    borderWidth: 1,
-    borderColor: '#fff',
-    height: 50,
-    width: "100%",
-    justifyContent: "center",
-
-  },
-  btnText: {
-    color: "#fff",
-    textAlign:'center',
-    paddingLeft: 10,
-    paddingRight: 10,
   },
   container: {
     flex: 1,
@@ -114,18 +100,6 @@ const styles = StyleSheet.create({
   img: {
     width: 100,
     height: 100,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "grey",
-    borderRadius: 3,
-    padding: 10,
-    shadowColor: "#171717",
-    //shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    height: 40,
-    width: "100%",
   },
   text: {
     fontWeight: "bold",
