@@ -117,7 +117,7 @@ export default function TargetScreen(props: Object) {
     >
       <View style={styles.item}>
         <Text style={styles.text}>{item.value}</Text>
-        <Text style={styles.date}>{item.time}</Text>
+        <Text style={styles.date}>{new Date(item.time).toLocaleString()}</Text>
       </View>
     </TouchableOpacity>
   );
