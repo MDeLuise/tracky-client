@@ -6,8 +6,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView, Text } from "react-native";
 import React, { useState } from "react";
 import TargetScreen from "./components/TargetScreen";
-import AddValueScreen from "./components/AddValueScreen";
-import AddTargetScreen from "./components/AddTargetScreen";
+import AddEditValueScreen from "./components/AddEditValueScreen";
+import AddEditTargetScreen from "./components/AddEditTargetScreen";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 const Stack = createNativeStackNavigator();
@@ -64,13 +64,13 @@ export default function App() {
                 options={{ title: "" }}
               />
               <Stack.Screen
-                name="AddValueScreen"
-                component={AddValueScreen}
+                name="AddEditValueScreen"
+                component={AddEditValueScreen}
                 options={{ title: "New value" }}
               />
               <Stack.Screen
-                name="AddTargetScreen"
-                component={AddTargetScreen}
+                name="AddEditTargetScreen"
+                component={AddEditTargetScreen}
                 options={{ title: "New target" }}
               />
             </Stack.Navigator>

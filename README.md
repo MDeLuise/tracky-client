@@ -59,12 +59,15 @@ Further paragraphs come after blank lines.
 
 ## Future update
 - [ ] Configure decimal and total digit for each target graph
-- [ ] Edit values
-- [ ] Edit existing target
+- [ ] Sort targets and values
+- [ ] Add stats visualization (e.g. increment respect last value, mean, ...)
+- [ ] Batch removing of targets/values
+- [ ] Cache targets and values
 - [ ] Dark mode
-- [ ] Add targets unit of measurement 
 - [ ] Multi users support
 - [ ] Export of values
 - [ ] Filter values by start/end dates
 - [ ] Get last _n_ target's values
-- [X] Add unit to target's values
+- [X] Add unit of measurement to target's values
+- [X] Edit existing target
+- [X] Edit values

@@ -19,7 +19,7 @@ export default function TargetListScreen(props: Object) {
   const [loading, setLoading]: [boolean, Function] = useState(true);
 
   const { showActionSheetWithOptions } = useActionSheet();
-  const contextMenu = (targetId: string) => {
+  const contextMenu = (target: string) => {
     const options = ["Edit", "Delete", "Cancel"];
     const destructiveButtonIndex = 1;
     const cancelButtonIndex = 2;
@@ -32,13 +32,20 @@ export default function TargetListScreen(props: Object) {
       },
       (selectedIndex: number) => {
         switch (selectedIndex) {
-          case 0:
-            // Edit
+          case 0: 
+            props.navigation.navigate("AddEditTargetScreen", {
+              apiKey: props.apiKey,
+              hostAddress: props.hostAddress,
+              name: target.name,
+              description: target.description,
+              unit: target.unit,
+              id: target.id
+            })
             break;
 
           case 1:
             doDelete(
-              props.hostAddress + "/target/" + targetId,
+              props.hostAddress + "/target/" + target.id,
               props.apiKey
             ).catch((err) => {
               if (err === "server") return;
@@ -123,7 +130,7 @@ export default function TargetListScreen(props: Object) {
         })
       }
       style={{ width: "100%" }}
-      onLongPress={() => contextMenu(item.id)}>
+      onLongPress={() => contextMenu(item)}>
       <View style={GlobalStyles.item}>
         <View>
           <Text style={styles.title}>{item.name}</Text>
@@ -142,7 +149,7 @@ export default function TargetListScreen(props: Object) {
           <TouchableOpacity
             style={styles.addTarget}
             onPress={() =>
-              props.navigation.navigate("AddTargetScreen", {
+              props.navigation.navigate("AddEditTargetScreen", {
                 apiKey: props.apiKey,
                 hostAddress: props.hostAddress,
                 //navigation: props.navigation
