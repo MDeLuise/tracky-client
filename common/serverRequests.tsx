@@ -6,6 +6,14 @@ export const doPost = (
   return doFetch(url, "post", body, apiKey);
 };
 
+export const doPut = (
+  url: string,
+  body: string,
+  apiKey: string
+): Promise<Response> => {
+  return doFetch(url, "put", body, apiKey);
+};
+
 export const doGet = (url: string, apiKey: string): Promise<Response> => {
   return doFetch(url, "get", undefined, apiKey);
 };

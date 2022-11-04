@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, SafeAreaView, TextInput, TouchableOpacity } from "react-native";
 import { GlobalStyles } from "../common/GlobalStyles";
-import { doPost } from "../common/ServerRequests";
+import { doPost, doPut } from "../common/ServerRequests";
 
 export default function AddTargetScreen(props: any) {
-  const [name, setName] = useState();
-  const [description, setDescription] = useState();
-  const [unit, setUnit] = useState();
+  const [name, setName] = useState(props.route.params.name);
+  const [description, setDescription] = useState(props.route.params.description);
+  const [unit, setUnit] = useState(props.route.params.unit);
+
+  const isUpdate: Function = () => {
+    return props.route.params.name !== undefined
+  }
 
   const addTarget: Function = () => {
     const dataToSend: string = JSON.stringify({
@@ -27,18 +31,35 @@ export default function AddTargetScreen(props: any) {
           return Promise.reject("server");
         }
       })
-      /*.then((_dataJson) =>
-        props.navigation.navigate("HomeScreen", {
-          accessToken: props.route.params.accessToken,
-          refreshToken: props.route.params.refreshToken,
-          hostAddress: props.route.params.hostAddress,
-          targetId: props.route.params.targetId,
-          navigation: props.navigation
-        })
-      )*/
       .catch((err) => {
         if (err === "server") return;
         alert("cannot connect to the server");
+        console.error(err);
+      });
+  };
+
+  const updateTarget: Function = () => {
+    const dataToSend: string = JSON.stringify({
+      name: name,
+      description: description,
+      unit: unit
+    });
+    doPut(
+      props.route.params.hostAddress + "/target/" + props.route.params.id,
+      dataToSend,
+      props.route.params.apiKey
+    )
+      .then((resp) => {
+        if (resp.status === 200) {
+          return resp.json();
+        } else {
+          alert("error updating target");
+          return Promise.reject("server");
+        }
+      })
+      .catch((err) => {
+        if (err === "server") return;
+        alert("cannot connecting to the server");
         console.error(err);
       });
   };
@@ -48,19 +69,24 @@ export default function AddTargetScreen(props: any) {
       <TextInput
         style={styles.input}
         onChangeText={(val) => setName(val)}
-        placeholder="Name" />
+        placeholder="Name"
+        defaultValue={props.route.params.name} />
       <TextInput
         style={styles.input}
         onChangeText={(val) => setDescription(val)}
-        placeholder="Description" />
+        placeholder="Description"
+        defaultValue={props.route.params.description} />
       <TextInput
         style={styles.input}
         onChangeText={(val) => setUnit(val)}
-        placeholder="Unit" />
+        placeholder="Unit"
+        defaultValue={props.route.params.unit} />
       <TouchableOpacity
         style={{...GlobalStyles.btn, width: "80%" }}
-        onPress={() => addTarget()}>
-        <Text style={GlobalStyles.btnText}>Create</Text>
+        onPress={() => isUpdate() ?  updateTarget() : addTarget()}>
+        <Text style={GlobalStyles.btnText}>
+          {isUpdate() ? "Update" : "Create"}
+        </Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

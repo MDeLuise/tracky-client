@@ -25,7 +25,7 @@ export default function TargetScreen(props: Object) {
   const [loading, setLoading]: [boolean?, Function?] = useState(true);
 
   const { showActionSheetWithOptions } = useActionSheet();
-  const contextMenu = (valueId: string) => {
+  const contextMenu = (item: Object) => {
     const options = ["Edit", "Delete", "Cancel"];
     const destructiveButtonIndex = 1;
     const cancelButtonIndex = 2;
@@ -39,12 +39,19 @@ export default function TargetScreen(props: Object) {
       (selectedIndex: number) => {
         switch (selectedIndex) {
           case 0:
-            // Edit
+            props.navigation.navigate("AddEditValueScreen", {
+              apiKey: props.route.params.apiKey,
+              hostAddress: props.route.params.hostAddress,
+              targetId: props.route.params.targetId,
+              id: item.id,
+              value: item.value,
+              date: new Date(item.time).toLocaleString(),
+            })
             break;
 
           case 1:
             doDelete(
-              props.route.params.hostAddress + "/value/" + valueId,
+              props.route.params.hostAddress + "/value/" + item.id,
               props.route.params.apiKey
             )
               .then((res) => {
@@ -115,7 +122,7 @@ export default function TargetScreen(props: Object) {
   const renderValues = ({ item }: Object) => (
     <TouchableOpacity
       style={{ width: "100%" }}
-      onLongPress={() => contextMenu(item.id)}
+      onLongPress={() => contextMenu(item)}
     >
       <View style={styles.item}>
         <Text style={styles.text}>{item.value} {unit}</Text>
@@ -139,10 +146,11 @@ export default function TargetScreen(props: Object) {
           <Pressable
             style={styles.addBtn}
             onPress={() =>
-              props.navigation.navigate("AddValueScreen", {
+              props.navigation.navigate("AddEditValueScreen", {
                 apiKey: props.route.params.apiKey,
                 hostAddress: props.route.params.hostAddress,
                 targetId: props.route.params.targetId,
+                date: (new Date()).toLocaleString(),
               })
             }
           >
