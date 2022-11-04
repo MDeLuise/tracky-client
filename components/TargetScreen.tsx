@@ -21,6 +21,7 @@ export default function TargetScreen(props: Object) {
   const [graphValues, setGraphValues]: [Array<String>?, Function?] = useState(
     []
   );
+  const [unit, setUnit]: [string?, Function?] = useState();
   const [loading, setLoading]: [boolean?, Function?] = useState(true);
 
   const { showActionSheetWithOptions } = useActionSheet();
@@ -78,6 +79,7 @@ export default function TargetScreen(props: Object) {
       })
       .then((dataJson) => {
         setTarget(dataJson["Data"]);
+        setUnit(dataJson["Data"]["unit"])
         if (dataJson["Data"]["values"] != undefined) {
           loadGraphData(dataJson["Data"]["values"]);
         }
@@ -116,7 +118,7 @@ export default function TargetScreen(props: Object) {
       onLongPress={() => contextMenu(item.id)}
     >
       <View style={styles.item}>
-        <Text style={styles.text}>{item.value}</Text>
+        <Text style={styles.text}>{item.value} {unit}</Text>
         <Text style={styles.date}>{new Date(item.time).toLocaleString()}</Text>
       </View>
     </TouchableOpacity>
