@@ -45,7 +45,8 @@ export default function HomeScreen(props: any) {
           name="Settings"
           children={() => (
             <SettingsScreen
-              navigation={props.navigation} />
+              navigation={props.navigation}
+              versionNumber={props.route.params.versionNumber} />
           )} />
       </sampleTabNavigation.Navigator>
     </NavigationContainer>

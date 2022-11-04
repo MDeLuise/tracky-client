@@ -18,6 +18,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [apiKey, setApiKey] = useState("");
   const [hostAddress, setHostAddress] = useState("");
+  const versionNumber: String = "1.0.0-SNAPSHOT"
   const getData = async () => {
     try {
       const storedApiKey = await AsyncStorage.getItem("apiKey");
@@ -53,6 +54,7 @@ export default function App() {
                 initialParams={{
                   apiKey: apiKey,
                   hostAddress: hostAddress,
+                  versionNumber: versionNumber,
                 }}
                 options={{ title: "Tracky" }}
               />

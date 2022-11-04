@@ -14,6 +14,7 @@ export default function SettingsScreen(props: any) {
         }}>
         <Text style={GlobalStyles.btnText}>logout</Text>
       </TouchableOpacity>
+      <Text style={{opacity: 0.5, marginTop: 10}}>version: {props.versionNumber}</Text>
     </ScrollView>
   );
 }
