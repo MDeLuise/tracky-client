@@ -12,6 +12,7 @@ export default function AddTargetScreen(props: any) {
     const dataToSend: string = JSON.stringify({
       name: name,
       description: description,
+      unit: unit
     });
     doPost(
       props.route.params.hostAddress + "/target",

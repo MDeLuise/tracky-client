@@ -15,6 +15,7 @@ import { GlobalStyles } from "../common/GlobalStyles";
 export default function TargetListScreen(props: Object) {
   const [targets, setTargets]: [Array<string>, Function] = useState([]);
   const [values, setValues]: [Object, Function] = useState({});
+  const [units, setUnits]: [Object, Function] = useState({});
   const [loading, setLoading]: [boolean, Function] = useState(true);
 
   const { showActionSheetWithOptions } = useActionSheet();
@@ -93,6 +94,8 @@ export default function TargetListScreen(props: Object) {
         if (dataJson["Data"]["values"] != undefined) {
           values[targetId] = dataJson["Data"]["values"][0]["value"];
           setValues({ ...values });
+          units[targetId] = dataJson["Data"]["unit"];
+          setUnits({ ...units });
         }
       })
       .catch((err) => {
@@ -126,7 +129,7 @@ export default function TargetListScreen(props: Object) {
           <Text style={styles.title}>{item.name}</Text>
           <Text style={styles.description}>{item.description}</Text>
         </View>
-        <Text style={styles.lastValue}>{values[item.id]}</Text>
+        <Text style={styles.lastValue}>{values[item.id]} {units[item.id]}</Text>
       </View>
     </TouchableOpacity>
   );

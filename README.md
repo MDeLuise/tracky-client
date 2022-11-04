@@ -59,7 +59,6 @@ Further paragraphs come after blank lines.
 
 ## Future update
 - [ ] Configure decimal and total digit for each target graph
-- [ ] Add unit to target's values
 - [ ] Edit values
 - [ ] Edit existing target
 - [ ] Dark mode
@@ -68,3 +67,4 @@ Further paragraphs come after blank lines.
 - [ ] Export of values
 - [ ] Filter values by start/end dates
 - [ ] Get last _n_ target's values
+- [X] Add unit to target's values
