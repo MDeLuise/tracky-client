@@ -43,5 +43,5 @@ const doFetch = (
     url += "?key=" + apiKey;
   }
 
-  return fetch(url , options);
+  return fetch(url, options);
 };

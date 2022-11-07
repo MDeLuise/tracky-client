@@ -12,7 +12,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import { GlobalStyles } from "../common/GlobalStyles";
 
-export default function TargetListScreen(props: Object) {
+export default function TargetListScreen({ route, navigation }) {
+  const { hostAddress, apiKey } = route.params;
   const [targets, setTargets]: [Array<string>, Function] = useState([]);
   const [values, setValues]: [Object, Function] = useState({});
   const [units, setUnits]: [Object, Function] = useState({});
@@ -32,10 +33,10 @@ export default function TargetListScreen(props: Object) {
       },
       (selectedIndex: number) => {
         switch (selectedIndex) {
-          case 0: 
-            props.navigation.navigate("AddEditTargetScreen", {
-              apiKey: props.apiKey,
-              hostAddress: props.hostAddress,
+          case 0:
+            navigation.navigate("AddEditTarget", {
+              apiKey: apiKey,
+              hostAddress: hostAddress,
               name: target.name,
               description: target.description,
               unit: target.unit,
@@ -45,13 +46,14 @@ export default function TargetListScreen(props: Object) {
 
           case 1:
             doDelete(
-              props.hostAddress + "/target/" + target.id,
-              props.apiKey
+              hostAddress + "/target/" + target.id,
+              apiKey
             ).catch((err) => {
               if (err === "server") return;
               console.error(err);
               alert(err);
             });
+            removeTargetLocally(target.id)
             break;
 
           case 2:
@@ -62,7 +64,7 @@ export default function TargetListScreen(props: Object) {
   };
 
   const fetchTargets: Function = () => {
-    doGet(props.hostAddress + "/target", props.apiKey)
+    doGet(hostAddress + "/target", apiKey)
       .then((resp) => {
         if (resp.status === 200) {
           return resp.json();
@@ -88,7 +90,7 @@ export default function TargetListScreen(props: Object) {
   };
 
   const fetchLastValueOfTarget: Function = (targetId: string) => {
-    doGet(props.hostAddress + "/target/" + targetId, props.apiKey)
+    doGet(hostAddress + "/target/" + targetId, apiKey)
       .then((resp) => {
         if (resp.status === 200) {
           return resp.json();
@@ -112,19 +114,27 @@ export default function TargetListScreen(props: Object) {
       });
   };
 
+  const removeTargetLocally = (targetId: string) => {
+    console.log("deleting " + targetId)
+    setTargets(targets.filter(tar => tar.id != targetId));
+  }
+
   useEffect(() => {
     fetchTargets();
-    props.navigation.addListener("focus", () => {
+    navigation.addListener("focus", () => {
       fetchTargets();
     });
+    navigation.setOptions({
+      headerLeft: () => null
+    })
   }, []);
 
   const renderItem = ({ item }: any) => (
     <TouchableOpacity
       onPress={() =>
-        props.navigation.navigate("TargetScreen", {
-          apiKey: props.apiKey,
-          hostAddress: props.hostAddress,
+        navigation.navigate("Details", {
+          apiKey: apiKey,
+          hostAddress: hostAddress,
           targetId: item.id,
           targetName: item.name,
         })
@@ -149,10 +159,9 @@ export default function TargetListScreen(props: Object) {
           <TouchableOpacity
             style={styles.addTarget}
             onPress={() =>
-              props.navigation.navigate("AddEditTargetScreen", {
-                apiKey: props.apiKey,
-                hostAddress: props.hostAddress,
-                //navigation: props.navigation
+              navigation.navigate("AddEditTarget", {
+                apiKey: apiKey,
+                hostAddress: hostAddress,
               })
             }>
             <Ionicons name="add" size={20} color={"white"} />

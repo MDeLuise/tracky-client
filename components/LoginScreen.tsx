@@ -36,10 +36,9 @@ export default function LoginScreen({ navigation }: any) {
         try {
           AsyncStorage.multiSet(
             [["apiKey", apiKey], ["hostAddress", hostAddress]],
-            () => navigation.navigate("HomeScreen", {
+            () => navigation.navigate("TabScreen", {
               hostAddress: hostAddress,
               apiKey: apiKey,
-              navigation: navigation,
             }));
         } catch (e) {
           console.error("error persisting data", e);
