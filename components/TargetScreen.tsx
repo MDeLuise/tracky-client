@@ -15,14 +15,14 @@ import { useActionSheet } from "@expo/react-native-action-sheet";
 
 export default function TargetScreen(props: Object) {
   const [target, setTarget]: [string?, Function?] = useState();
-  const [graphLabels, setGraphLabels]: [Array<String>?, Function?] = useState(
+  const [graphLabels, setGraphLabels]: [Array<String>, Function] = useState(
     []
   );
-  const [graphValues, setGraphValues]: [Array<String>?, Function?] = useState(
+  const [graphValues, setGraphValues]: [Array<String>, Function] = useState(
     []
   );
   const [unit, setUnit]: [string?, Function?] = useState();
-  const [loading, setLoading]: [boolean?, Function?] = useState(true);
+  const [loading, setLoading]: [boolean, Function] = useState(true);
 
   const { showActionSheetWithOptions } = useActionSheet();
   const contextMenu = (item: Object) => {

@@ -14,10 +14,10 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   //AsyncStorage.clear()
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [apiKey, setApiKey] = useState("");
-  const [hostAddress, setHostAddress] = useState("");
+  const [loggedIn, setLoggedIn]: [boolean, Function?] = useState(false);
+  const [loading, setLoading]: [boolean, Function?] = useState(true);
+  const [apiKey, setApiKey]: [string, Function?] = useState("");
+  const [hostAddress, setHostAddress]: [string, Function?] = useState("");
   const versionNumber: String = "1.0.0-SNAPSHOT"
   const getData = async () => {
     try {

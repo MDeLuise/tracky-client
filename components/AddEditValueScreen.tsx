@@ -5,9 +5,9 @@ import { GlobalStyles } from "../common/GlobalStyles";
 import { doPost, doPut } from "../common/ServerRequests";
 
 export default function AddEditValueScreen(props: any) {
-  const [value, setValue]: [number?, Function?] = useState(props.route.params.value);
-  const [date, setDate]: [Date, Function?] = useState(props.route.params.date)
-  const [isVisible, setVisible]: [boolean, Function?] = useState(false);
+  const [value, setValue]: [number, Function] = useState(props.route.params.value);
+  const [date, setDate]: [Date, Function] = useState(props.route.params.date)
+  const [isVisible, setVisible]: [boolean, Function] = useState(false);
 
   const isUpdate: Function = () => {
     return props.route.params.id !== undefined;

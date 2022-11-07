@@ -4,9 +4,9 @@ import { GlobalStyles } from "../common/GlobalStyles";
 import { doPost, doPut } from "../common/ServerRequests";
 
 export default function AddTargetScreen(props: any) {
-  const [name, setName] = useState(props.route.params.name);
-  const [description, setDescription] = useState(props.route.params.description);
-  const [unit, setUnit] = useState(props.route.params.unit);
+  const [name, setName]: [string, Function] = useState(props.route.params.name);
+  const [description, setDescription]: [string, Function] = useState(props.route.params.description);
+  const [unit, setUnit]: [string, Function] = useState(props.route.params.unit);
 
   const isUpdate: Function = () => {
     return props.route.params.name !== undefined
@@ -82,8 +82,8 @@ export default function AddTargetScreen(props: any) {
         placeholder="Unit"
         defaultValue={props.route.params.unit} />
       <TouchableOpacity
-        style={{...GlobalStyles.btn, width: "80%" }}
-        onPress={() => isUpdate() ?  updateTarget() : addTarget()}>
+        style={{ ...GlobalStyles.btn, width: "80%" }}
+        onPress={() => isUpdate() ? updateTarget() : addTarget()}>
         <Text style={GlobalStyles.btnText}>
           {isUpdate() ? "Update" : "Create"}
         </Text>
