@@ -1,28 +1,31 @@
-import React, { useState } from "react";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, SafeAreaView, TextInput, TouchableOpacity, Appearance } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { GlobalStyles } from "../common/GlobalStyles";
 import { doPost, doPut } from "../common/ServerRequests";
 
-export default function AddEditValueScreen(props: any) {
-  const [value, setValue]: [number?, Function?] = useState(props.route.params.value);
-  const [date, setDate]: [Date, Function?] = useState(props.route.params.date)
-  const [isVisible, setVisible]: [boolean, Function?] = useState(false);
+export default function AddEditValueScreen({ route, navigation }) {
+  const dateFormat = "DD/MM/YYYY hh:mm:ss";
+  const { apiKey, hostAddress, targetId, date, id, value } = route.params;
+  const [selectedValue, setSelectedValue]: [number, Function] = useState(value || 0);
+  const [selectedDate, setSelectedDate]: [Date, Function] = useState(date || new Date())
+  const [isVisible, setVisible]: [boolean, Function] = useState(false);
 
   const isUpdate: Function = () => {
-    return props.route.params.id !== undefined;
+    return id !== undefined;
   }
 
   const addValue: Function = () => {
     const dataToSend: string = JSON.stringify({
-      value: value,
-      target_id: props.route.params.targetId,
-      time: new Date(date),
+      value: selectedValue,
+      target_id: targetId,
+      time: selectedDate.toISOString(),
     });
     doPost(
-      props.route.params.hostAddress + "/value",
+      hostAddress + "/value",
       dataToSend,
-      props.route.params.apiKey
+      apiKey
     )
       .then((resp) => {
         if (resp.status === 200) {
@@ -33,10 +36,10 @@ export default function AddEditValueScreen(props: any) {
         }
       })
       .then((_dataJson) => {
-        props.navigation.navigate("TargetScreen", {
-          apiKey: props.route.params.apiKey,
-          hostAddress: props.route.params.hostAddress,
-          targetId: props.route.params.targetId,
+        navigation.navigate("Details", {
+          apiKey: apiKey,
+          hostAddress: hostAddress,
+          targetId: targetId,
         });
       })
       .catch((err) => {
@@ -48,14 +51,14 @@ export default function AddEditValueScreen(props: any) {
 
   const updateValue: Function = () => {
     const dataToSend: string = JSON.stringify({
-      value: value,
-      target_id: props.route.params.targetId,
-      time: new Date(date),
+      value: selectedValue,
+      target_id: targetId,
+      time: selectedDate.toISOString(),
     });
     doPut(
-      props.route.params.hostAddress + "/value/" + props.route.params.id,
+      hostAddress + "/value/" + id,
       dataToSend,
-      props.route.params.apiKey
+      apiKey
     )
       .then((resp) => {
         if (resp.status === 200) {
@@ -66,10 +69,10 @@ export default function AddEditValueScreen(props: any) {
         }
       })
       .then((_dataJson) => {
-        props.navigation.navigate("TargetScreen", {
-          apiKey: props.route.params.apiKey,
-          hostAddress: props.route.params.hostAddress,
-          targetId: props.route.params.targetId,
+        navigation.navigate("Details", {
+          apiKey: apiKey,
+          hostAddress: hostAddress,
+          targetId: targetId,
         });
       })
       .catch((err) => {
@@ -79,21 +82,28 @@ export default function AddEditValueScreen(props: any) {
       });
   };
 
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: isUpdate() ? "Edit value" : "New value"
+    })
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <TextInput
         keyboardType={"numeric"}
         style={styles.input}
-        onChangeText={(val) => setValue(parseFloat(val.replace(',', '.')))}
-        defaultValue={props.route.params.value.toString()}
+        onChangeText={(val) => setSelectedValue(parseFloat(val.replace(',', '.')))}
+        defaultValue={selectedValue.toString()}
         placeholder="value"
       />
       <TextInput
         style={styles.input}
-        defaultValue={date.toLocaleString()}
+        defaultValue={moment(selectedDate).format(dateFormat)}
         placeholder="date"
         onPressIn={() => setVisible(true)}
-        onChangeText={(val) => setDate(val)}
+        onChangeText={(val) => setSelectedDate(moment(val, dateFormat).toDate())}
         showSoftInputOnFocus={false} />
       <DateTimePickerModal
         isVisible={isVisible}
@@ -101,7 +111,7 @@ export default function AddEditValueScreen(props: any) {
         isDarkModeEnabled={Appearance.getColorScheme() == "dark"} // FIXME to change
         mode="datetime"
         onConfirm={(date) => {
-          setDate(date)
+          setSelectedDate(date)
           setVisible(false)
         }}
         onCancel={() => setVisible(false)}

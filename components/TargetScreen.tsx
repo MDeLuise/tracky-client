@@ -13,16 +13,17 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import ChartComponent from "./ChartComponent";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 
-export default function TargetScreen(props: Object) {
-  const [target, setTarget]: [string?, Function?] = useState();
-  const [graphLabels, setGraphLabels]: [Array<String>?, Function?] = useState(
+export default function TargetScreen({ route, navigation }) {
+  const { hostAddress, apiKey, targetId, targetName } = route.params;
+  const [target, setTarget]: [Object?, Function?] = useState();
+  const [graphLabels, setGraphLabels]: [Array<String>, Function] = useState(
     []
   );
-  const [graphValues, setGraphValues]: [Array<String>?, Function?] = useState(
+  const [graphValues, setGraphValues]: [Array<String>, Function] = useState(
     []
   );
-  const [unit, setUnit]: [string?, Function?] = useState();
-  const [loading, setLoading]: [boolean?, Function?] = useState(true);
+  const [unit, setUnit]: [string, Function] = useState('');
+  const [loading, setLoading]: [boolean, Function] = useState(true);
 
   const { showActionSheetWithOptions } = useActionSheet();
   const contextMenu = (item: Object) => {
@@ -39,23 +40,28 @@ export default function TargetScreen(props: Object) {
       (selectedIndex: number) => {
         switch (selectedIndex) {
           case 0:
-            props.navigation.navigate("AddEditValueScreen", {
-              apiKey: props.route.params.apiKey,
-              hostAddress: props.route.params.hostAddress,
-              targetId: props.route.params.targetId,
+            navigation.navigate("AddEditValue", {
+              apiKey: apiKey,
+              hostAddress: hostAddress,
+              targetId: targetId,
               id: item.id,
               value: item.value,
-              date: new Date(item.time).toLocaleString(),
+              date: new Date(item.time),
             })
             break;
 
           case 1:
             doDelete(
-              props.route.params.hostAddress + "/value/" + item.id,
-              props.route.params.apiKey
+              hostAddress + "/value/" + item.id,
+              apiKey
             )
               .then((res) => {
-                //dispatchEvent(new Event("focus"));
+                if (res.status === 200) {
+                  removeValueLocally(item.id, item.value, item.time)
+                } else {
+                  alert("error deleting the value");
+                  return Promise.reject("server");
+                }
               })
               .catch((err) => {
                 if (err === "server") return;
@@ -73,8 +79,8 @@ export default function TargetScreen(props: Object) {
 
   const fetchTarget: Function = () => {
     doGet(
-      props.route.params.hostAddress + "/target/" + props.route.params.targetId,
-      props.route.params.apiKey
+      hostAddress + "/target/" + targetId,
+      apiKey
     )
       .then((resp) => {
         if (resp.status === 200) {
@@ -112,9 +118,9 @@ export default function TargetScreen(props: Object) {
   };
 
   useEffect(() => {
-    props.navigation.setOptions({ title: props.route.params.targetName });
+    navigation.setOptions({ title: targetName });
     fetchTarget();
-    props.navigation.addListener("focus", () => {
+    navigation.addListener("focus", () => {
       fetchTarget();
     });
   }, []);
@@ -131,6 +137,19 @@ export default function TargetScreen(props: Object) {
     </TouchableOpacity>
   );
 
+  const removeValueLocally = (valueId: string, valueNum: string, valueTime: string) => {
+    for (let i = 0; i < graphLabels.length; i++) {
+      if ((graphLabels[i] == valueTime) && (graphValues[i] == valueNum)) {
+        graphLabels.splice(i, 1);
+        graphValues.splice(i, 1);
+        break;
+      }
+    }
+    let targetCopy = JSON.parse(JSON.stringify(target));
+    targetCopy.values = targetCopy.values.filter(val => val.id != valueId)
+    setTarget(targetCopy);
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
       {loading && <Text>Loading...</Text>}
@@ -146,11 +165,10 @@ export default function TargetScreen(props: Object) {
           <Pressable
             style={styles.addBtn}
             onPress={() =>
-              props.navigation.navigate("AddEditValueScreen", {
-                apiKey: props.route.params.apiKey,
-                hostAddress: props.route.params.hostAddress,
-                targetId: props.route.params.targetId,
-                date: (new Date()).toLocaleString(),
+              navigation.navigate("AddEditValue", {
+                apiKey: apiKey,
+                hostAddress: hostAddress,
+                targetId: targetId,
               })
             }
           >

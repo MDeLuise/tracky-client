@@ -1,27 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, SafeAreaView, TextInput, TouchableOpacity } from "react-native";
 import { GlobalStyles } from "../common/GlobalStyles";
 import { doPost, doPut } from "../common/ServerRequests";
 
-export default function AddTargetScreen(props: any) {
-  const [name, setName] = useState(props.route.params.name);
-  const [description, setDescription] = useState(props.route.params.description);
-  const [unit, setUnit] = useState(props.route.params.unit);
+export default function AddTargetScreen({ route, navigation }) {
+  const { hostAddress, apiKey, description, name, unit, id } = route.params;
+  const [selectedName, setSelectedName]: [string, Function] = useState(name || name);
+  const [selectedDescription, setSelectedDescription]: [string, Function] = useState(description || "");
+  const [selectedUnit, setSelectedUnit]: [string, Function] = useState(unit || unit);
 
   const isUpdate: Function = () => {
-    return props.route.params.name !== undefined
+    return name !== undefined
   }
 
   const addTarget: Function = () => {
     const dataToSend: string = JSON.stringify({
-      name: name,
-      description: description,
-      unit: unit
+      name: selectedName,
+      description: selectedDescription,
+      unit: selectedUnit
     });
     doPost(
-      props.route.params.hostAddress + "/target",
+      hostAddress + "/target",
       dataToSend,
-      props.route.params.apiKey
+      apiKey
     )
       .then((resp) => {
         if (resp.status === 200) {
@@ -30,6 +31,9 @@ export default function AddTargetScreen(props: any) {
           alert("error adding target");
           return Promise.reject("server");
         }
+      })
+      .then((_resp) => {
+        navigation.navigate("Targets");
       })
       .catch((err) => {
         if (err === "server") return;
@@ -40,14 +44,14 @@ export default function AddTargetScreen(props: any) {
 
   const updateTarget: Function = () => {
     const dataToSend: string = JSON.stringify({
-      name: name,
-      description: description,
-      unit: unit
+      name: selectedName,
+      description: selectedDescription,
+      unit: selectedUnit
     });
     doPut(
-      props.route.params.hostAddress + "/target/" + props.route.params.id,
+      hostAddress + "/target/" + id,
       dataToSend,
-      props.route.params.apiKey
+      apiKey
     )
       .then((resp) => {
         if (resp.status === 200) {
@@ -57,6 +61,9 @@ export default function AddTargetScreen(props: any) {
           return Promise.reject("server");
         }
       })
+      .then((_resp) => {
+        navigation.navigate("Targets");
+      })
       .catch((err) => {
         if (err === "server") return;
         alert("cannot connecting to the server");
@@ -64,26 +71,32 @@ export default function AddTargetScreen(props: any) {
       });
   };
 
+  useEffect(() => {
+    navigation.setOptions({
+      title: isUpdate() ? "Edit target" : "New target"
+    })
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <TextInput
         style={styles.input}
-        onChangeText={(val) => setName(val)}
+        onChangeText={(val) => setSelectedName(val)}
         placeholder="Name"
-        defaultValue={props.route.params.name} />
+        defaultValue={selectedName} />
       <TextInput
         style={styles.input}
-        onChangeText={(val) => setDescription(val)}
+        onChangeText={(val) => setSelectedDescription(val)}
         placeholder="Description"
-        defaultValue={props.route.params.description} />
+        defaultValue={selectedDescription} />
       <TextInput
         style={styles.input}
-        onChangeText={(val) => setUnit(val)}
+        onChangeText={(val) => setSelectedUnit(val)}
         placeholder="Unit"
-        defaultValue={props.route.params.unit} />
+        defaultValue={selectedUnit} />
       <TouchableOpacity
-        style={{...GlobalStyles.btn, width: "80%" }}
-        onPress={() => isUpdate() ?  updateTarget() : addTarget()}>
+        style={{ ...GlobalStyles.btn, width: "80%" }}
+        onPress={() => isUpdate() ? updateTarget() : addTarget()}>
         <Text style={GlobalStyles.btnText}>
           {isUpdate() ? "Update" : "Create"}
         </Text>

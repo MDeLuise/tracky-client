@@ -16,8 +16,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GlobalStyles } from "../common/GlobalStyles";
 
 export default function LoginScreen({ navigation }: any) {
-  const [hostAddress, setHostAddress] = useState("http://localhost:3000");
-  const [apiKey, setApiKey] = useState('');
+  const [hostAddress, setHostAddress]: [string, Function] = useState("http://localhost:3000");
+  const [apiKey, setApiKey]: [string, Function] = useState('');
 
   const login = (host: string, key: string) => {
     doGet(`${host}/target`, key)
@@ -36,11 +36,10 @@ export default function LoginScreen({ navigation }: any) {
         try {
           AsyncStorage.multiSet(
             [["apiKey", apiKey], ["hostAddress", hostAddress]],
-            () => navigation.navigate("HomeScreen", {
+            () => navigation.navigate("TabScreen", {
               hostAddress: hostAddress,
               apiKey: apiKey,
-              navigation: navigation,
-          }));
+            }));
         } catch (e) {
           console.error("error persisting data", e);
         }
