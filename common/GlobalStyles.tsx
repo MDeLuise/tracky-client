@@ -13,6 +13,7 @@ export const GlobalStyles = {
         textAlign: 'center',
         paddingLeft: 10,
         paddingRight: 10,
+        fontWeight: "bold"
     },
     input: {
         borderWidth: 1,
