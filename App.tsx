@@ -22,7 +22,7 @@ export default function App() {
   const [loading, setLoading]: [boolean, Function] = useState(true);
   const [apiKey, setApiKey]: [string, Function] = useState("");
   const [hostAddress, setHostAddress]: [string, Function] = useState("");
-  const versionNumber: String = "1.0.0-SNAPSHOT"
+  const versionNumber: String = "1.0.0"
   
   const getData = async () => {
     try {
